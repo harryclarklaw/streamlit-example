@@ -2,3 +2,5 @@ node_modules/
 dist/
 data/config.json
 data/preferences.json
+data/history.json
+data/runs/

@@ -57,7 +57,12 @@ For: early-stage policy discussions, green papers, academic/think-tank reports i
 
 5. **Smart move** — 1–2 sentences. What would a well-informed board member want to know, and what would they instruct their team to do? Must be concrete and actionable. No generic advice.
 
-6. **Source** — URL to the primary source document.
+6. **Confidence** — Rate each item HIGH, MEDIUM, or LOW:
+   - HIGH: Based on a verified primary source (government gazette, official regulatory body announcement, court judgment). URL confirmed.
+   - MEDIUM: Based on credible secondary reporting (established trade press, major news outlet) or a primary source that is ambiguous. May require verification.
+   - LOW: Based on unverified reports, social media, speculation, or sources that could not be fully confirmed. Include but flag clearly.
+
+7. **Source** — URL to the primary source document.
 
 ## ANALYTICAL FRAMEWORK
 
@@ -117,6 +122,7 @@ Return your analysis as a JSON array where each item has this structure:
 {
   "title": "Development title",
   "urgency": "immediate" | "emerging" | "directional",
+  "confidence": "high" | "medium" | "low",
   "whatHappened": "2 sentences max",
   "strategicSignificance": "2-3 sentences",
   "whoShouldCare": "Specific client types and sectors",

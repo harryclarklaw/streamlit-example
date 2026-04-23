@@ -1,3 +1,4 @@
+import * as fs from 'fs';
 import { AnalysisResult, BriefingItem } from '../analysis/analyser';
 import { HorizonConfig } from '../config/manager';
 import { UserPreferences } from '../refine/preferences';
@@ -22,7 +23,9 @@ function formatDate(date: Date): string {
 function formatItem(item: BriefingItem): string {
   const lines: string[] = [];
 
+  const confidenceLabel = item.confidence.toUpperCase();
   lines.push(`### ${item.title}`);
+  lines.push(`*Confidence: ${confidenceLabel}*`);
   lines.push('');
   lines.push(`**What happened:**`);
   lines.push(item.whatHappened);
@@ -145,4 +148,15 @@ export function formatBriefing(
  */
 export function printBriefing(briefing: string): void {
   console.log('\n' + briefing);
+}
+
+/**
+ * Save the briefing to a file and return the path.
+ */
+export function saveBriefingToFile(briefing: string, filePath: string): void {
+  const dir = filePath.substring(0, filePath.lastIndexOf('/'));
+  if (dir && !fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+  fs.writeFileSync(filePath, briefing, 'utf-8');
 }

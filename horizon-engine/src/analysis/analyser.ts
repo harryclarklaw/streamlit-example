@@ -9,6 +9,7 @@ const MODEL = 'claude-sonnet-4-20250514';
 export interface BriefingItem {
   title: string;
   urgency: 'immediate' | 'emerging' | 'directional';
+  confidence: 'high' | 'medium' | 'low';
   whatHappened: string;
   strategicSignificance: string;
   whoShouldCare: string;
@@ -140,6 +141,7 @@ function parseAnalysisResponse(raw: string): BriefingItem[] {
     return parsed.map((item: Record<string, unknown>) => ({
       title: String(item.title ?? 'Untitled'),
       urgency: normaliseUrgency(String(item.urgency ?? 'emerging')),
+      confidence: normaliseConfidence(String(item.confidence ?? 'medium')),
       whatHappened: String(item.whatHappened ?? ''),
       strategicSignificance: String(item.strategicSignificance ?? ''),
       whoShouldCare: String(item.whoShouldCare ?? ''),
@@ -162,4 +164,13 @@ function normaliseUrgency(
   if (lower === 'immediate') return 'immediate';
   if (lower === 'directional') return 'directional';
   return 'emerging';
+}
+
+function normaliseConfidence(
+  confidence: string
+): 'high' | 'medium' | 'low' {
+  const lower = confidence.toLowerCase().trim();
+  if (lower === 'high') return 'high';
+  if (lower === 'low') return 'low';
+  return 'medium';
 }
