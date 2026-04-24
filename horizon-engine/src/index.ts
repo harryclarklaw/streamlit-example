@@ -24,6 +24,7 @@ import {
 import { loadPreferences } from './refine/preferences';
 
 let lastBriefingItems: BriefingItem[] = [];
+let lastRunId: string | undefined;
 
 function createReadlineInterface(): readline.Interface {
   return readline.createInterface({ input: process.stdin, output: process.stdout });
@@ -146,6 +147,7 @@ async function runAnalysisPhase(
   console.log(`  Run ID:        ${runId}\n`);
 
   lastBriefingItems = finalItems;
+  lastRunId = runId;
 }
 
 async function showApprovalGate(
@@ -213,10 +215,10 @@ async function handleResume(runId?: string): Promise<void> {
   console.log(`\n  Resuming run ${targetRunId} (status: ${manifest.status})\n`);
 
   if (manifest.status === 'complete') {
-    // Load and display existing briefing
     const items = loadBriefingItems(targetRunId);
     if (items) {
       lastBriefingItems = items;
+      lastRunId = targetRunId;
       console.log(`  Loaded ${items.length} briefing items from completed run.`);
       console.log(`  You can now use "refine" to provide feedback.\n`);
     }
@@ -251,12 +253,12 @@ async function handleResume(runId?: string): Promise<void> {
 
 async function handleRefine(): Promise<void> {
   if (lastBriefingItems.length === 0) {
-    // Try loading from the latest completed run
     const latestRun = getLatestRun();
     if (latestRun && latestRun.status === 'complete') {
       const items = loadBriefingItems(latestRun.runId);
       if (items && items.length > 0) {
         lastBriefingItems = items;
+        lastRunId = latestRun.runId;
         console.log(`\n  Loaded ${items.length} items from run ${latestRun.runId}.\n`);
       }
     }
@@ -267,7 +269,7 @@ async function handleRefine(): Promise<void> {
     return;
   }
 
-  await runRefine(lastBriefingItems);
+  await runRefine(lastBriefingItems, lastRunId);
 }
 
 function handleHistory(): void {
